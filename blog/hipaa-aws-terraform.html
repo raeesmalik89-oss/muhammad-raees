@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building HIPAA-Compliant Infrastructure on AWS with Terraform | Muhammad Raees</title>
+<meta name="description" content="A step-by-step walkthrough of provisioning healthcare-grade AWS environments — encryption, audit logging, IAM least-privilege, and automated compliance checks.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F172A;--navy2:#1E293B;--blue:#3B82F6;--blue2:#60A5FA;--cyan:#06B6D4;--green:#10B981;--white:#FFFFFF;--gray50:#F8FAFC;--gray100:#F1F5F9;--gray200:#E2E8F0;--gray400:#94A3B8;--gray600:#475569;--text:#0F172A}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);font-size:15px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;background:rgba(15,23,42,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-logo{font-size:18px;font-weight:800;color:var(--white);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-logo-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.5)}50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}}
+.nav-back{color:var(--gray400);text-decoration:none;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+.article-wrap{max-width:760px;margin:0 auto;padding:120px 40px 80px}
+.article-cat{display:inline-flex;align-items:center;background:#ECFDF5;color:#059669;border:1px solid #A7F3D0;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px}
+.article-title{font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--text);line-height:1.15;letter-spacing:-0.025em;margin-bottom:20px}
+.article-meta{display:flex;align-items:center;gap:20px;padding:16px 0;border-top:1px solid var(--gray200);border-bottom:1px solid var(--gray200);margin-bottom:40px;flex-wrap:wrap}
+.meta-author{display:flex;align-items:center;gap:10px}
+.meta-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:18px}
+.meta-name{font-size:14px;font-weight:700;color:var(--text)}
+.meta-date{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace}
+.meta-read{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.article-body h2{font-size:22px;font-weight:800;color:var(--text);margin:44px 0 16px;letter-spacing:-0.015em}
+.article-body p{color:var(--gray600);font-size:15px;line-height:1.85;margin-bottom:20px}
+.article-body strong{color:var(--text);font-weight:700}
+.article-body ul{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column;gap:10px}
+.article-body ul li{color:var(--gray600);font-size:14px;line-height:1.75;padding-left:20px;position:relative}
+.article-body ul li::before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:700}
+.callout{background:var(--gray50);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:20px 24px;margin:28px 0}
+.callout p{margin:0;color:var(--text);font-size:14px;line-height:1.75}
+.code-block{background:var(--navy);border-radius:10px;padding:24px;margin:24px 0;overflow-x:auto}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:#E2E8F0}
+.code-block .comment{color:#64748B}
+.code-block .key{color:#60A5FA}
+.code-block .val{color:#6EE7B7}
+.article-footer{margin-top:60px;padding-top:32px;border-top:1px solid var(--gray200);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.atag{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:600}
+.back-btn{background:var(--blue);color:var(--white);padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:background 0.2s}
+.back-btn:hover{background:#2563EB}
+@media(max-width:768px){nav{padding:0 20px}.article-wrap{padding:100px 20px 60px}.meta-read{margin-left:0}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-dot"></div>Muhammad Raees</a>
+  <a href="../index.html#blog" class="nav-back">← Back to Blog</a>
+</nav>
+
+<div class="article-wrap">
+  <div class="article-cat">Cloud Security</div>
+  <h1 class="article-title">Building HIPAA-Compliant Infrastructure on AWS with Terraform</h1>
+  <div class="article-meta">
+    <div class="meta-author">
+      <div class="meta-avatar">👨‍⚕️</div>
+      <div>
+        <div class="meta-name">Muhammad Raees</div>
+        <div class="meta-date">May 2026 · 9 min read</div>
+      </div>
+    </div>
+    <div class="meta-read">Cloud Security · AWS · Terraform</div>
+  </div>
+
+  <div class="article-body">
+    <p>Healthcare organizations moving to the cloud face a challenge that most cloud engineers underestimate: <strong>HIPAA compliance is not a checkbox, it is an architecture decision</strong>. Every layer of your AWS infrastructure — from VPC design to S3 bucket policies to CloudTrail configuration — must be built with Protected Health Information (PHI) in mind. In this article I walk through how I provision HIPAA-aligned AWS environments using Terraform, covering the five most critical controls.</p>
+
+    <h2>Why HIPAA Compliance Matters in Infrastructure</h2>
+    <p>HIPAA's Security Rule requires covered entities to implement technical safeguards protecting electronic PHI (ePHI). As an infrastructure engineer with a clinical pharmacy background, I've seen firsthand what happens when these safeguards fail — audit failures, breach notifications, and loss of patient trust. Terraform lets us encode these requirements as code, making them repeatable, auditable, and version-controlled.</p>
+
+    <div class="callout"><p><strong>Key principle:</strong> HIPAA doesn't mandate specific technologies — it mandates outcomes: confidentiality, integrity, and availability of ePHI. Your Terraform code is how you prove you've achieved those outcomes.</p></div>
+
+    <h2>1. VPC Design — Network Segmentation</h2>
+    <p>The foundation is a properly segmented VPC. Clinical data workloads must run in <strong>private subnets</strong> with no direct internet access. Only a hardened bastion or VPN gateway sits in the public subnet.</p>
+
+    <div class="code-block"><pre><span class="comment"># terraform/modules/vpc/main.tf</span>
+<span class="key">resource</span> <span class="val">"aws_vpc" "hipaa_vpc"</span> {
+  cidr_block           = <span class="val">"10.0.0.0/16"</span>
+  enable_dns_hostnames = <span class="val">true</span>
+  enable_dns_support   = <span class="val">true</span>
+  tags = { Name = <span class="val">"hipaa-vpc"</span>, Environment = <span class="val">"production"</span> }
+}
+
+<span class="key">resource</span> <span class="val">"aws_subnet" "private"</span> {
+  vpc_id                  = aws_vpc.hipaa_vpc.id
+  cidr_block              = <span class="val">"10.0.1.0/24"</span>
+  map_public_ip_on_launch = <span class="val">false</span>  <span class="comment"># never true for PHI workloads</span>
+}</pre></div>
+
+    <h2>2. Encryption at Rest and in Transit</h2>
+    <p>Every storage layer must encrypt PHI. For S3 this means server-side encryption with KMS customer-managed keys (CMKs). For RDS this means enabling storage encryption. For EBS volumes attached to EC2 instances, encryption must be enforced at the account level.</p>
+
+    <div class="code-block"><pre><span class="key">resource</span> <span class="val">"aws_s3_bucket_server_side_encryption_configuration" "phi"</span> {
+  bucket = aws_s3_bucket.phi_data.id
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = <span class="val">"aws:kms"</span>
+      kms_master_key_id = aws_kms_key.phi_key.arn
+    }
+    bucket_key_enabled = <span class="val">true</span>
+  }
+}
+
+<span class="key">resource</span> <span class="val">"aws_s3_bucket_public_access_block" "phi"</span> {
+  bucket                  = aws_s3_bucket.phi_data.id
+  block_public_acls       = <span class="val">true</span>
+  block_public_policy     = <span class="val">true</span>
+  ignore_public_acls      = <span class="val">true</span>
+  restrict_public_buckets = <span class="val">true</span>
+}</pre></div>
+
+    <h2>3. IAM Least-Privilege</h2>
+    <p>HIPAA's minimum necessary standard maps directly to IAM least-privilege. No role should have <code>*</code> actions on PHI resources. Each service gets a purpose-specific role with explicit, narrow permissions — and all permissions are defined in Terraform, never clicked in the console.</p>
+
+    <div class="code-block"><pre><span class="key">resource</span> <span class="val">"aws_iam_policy" "phi_read_only"</span> {
+  name = <span class="val">"PHIReadOnlyAccess"</span>
+  policy = jsonencode({
+    Version = <span class="val">"2012-10-17"</span>
+    Statement = [{
+      Effect   = <span class="val">"Allow"</span>
+      Action   = [<span class="val">"s3:GetObject"</span>, <span class="val">"s3:ListBucket"</span>]
+      Resource = [aws_s3_bucket.phi_data.arn, <span class="val">"${aws_s3_bucket.phi_data.arn}/*"</span>]
+      Condition = {
+        Bool = { <span class="val">"aws:SecureTransport"</span> = <span class="val">"true"</span> }
+      }
+    }]
+  })
+}</pre></div>
+
+    <h2>4. CloudTrail — Audit Logging</h2>
+    <p>HIPAA requires audit controls — logs of who accessed what PHI and when. CloudTrail must be enabled in all regions, with logs sent to an S3 bucket in a separate, locked-down account. Log integrity validation must be turned on.</p>
+
+    <div class="code-block"><pre><span class="key">resource</span> <span class="val">"aws_cloudtrail" "hipaa_trail"</span> {
+  name                          = <span class="val">"hipaa-audit-trail"</span>
+  s3_bucket_name                = aws_s3_bucket.audit_logs.id
+  include_global_service_events = <span class="val">true</span>
+  is_multi_region_trail         = <span class="val">true</span>
+  enable_log_file_validation    = <span class="val">true</span>  <span class="comment"># tamper detection</span>
+  kms_key_id                    = aws_kms_key.trail_key.arn
+}</pre></div>
+
+    <h2>5. AWS Config — Continuous Compliance Monitoring</h2>
+    <p>Terraform provisions the initial state, but drift happens. AWS Config continuously evaluates your resources against HIPAA-aligned managed rules — alerting you when a misconfiguration occurs.</p>
+    <ul>
+      <li><strong>s3-bucket-public-read-prohibited</strong> — catches any bucket that becomes public</li>
+      <li><strong>encrypted-volumes</strong> — flags unencrypted EBS volumes</li>
+      <li><strong>cloudtrail-enabled</strong> — verifies logging is always on</li>
+      <li><strong>iam-root-access-key-check</strong> — ensures root account has no active keys</li>
+      <li><strong>rds-storage-encrypted</strong> — enforces database encryption</li>
+    </ul>
+
+    <h2>Putting It All Together</h2>
+    <p>The real power of this approach is that your compliance posture is <strong>code</strong> — it lives in version control, it gets reviewed in pull requests, and it can be audited by your compliance team without screenshots or manual checks. When HIPAA auditors ask for evidence of your technical safeguards, you hand them a Terraform repository and a CloudTrail log.</p>
+    <p>As a pharmacist turned cloud engineer, I've sat on both sides of this: the clinical side where a PHI breach means real harm to real patients, and the engineering side where the right architecture prevents it. These aren't separate concerns — they are the same concern, expressed in different languages.</p>
+  </div>
+
+  <div class="article-footer">
+    <div class="tags">
+      <span class="atag">AWS</span><span class="atag">Terraform</span><span class="atag">HIPAA</span><span class="atag">Cloud Security</span>
+    </div>
+    <a href="../index.html#blog" class="back-btn">← Back to Portfolio</a>
+  </div>
+</div>
+</body>
+</html>

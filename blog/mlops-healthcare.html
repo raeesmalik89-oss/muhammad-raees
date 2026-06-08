@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLOps Pipeline for Healthcare AI Models | Muhammad Raees</title>
+<meta name="description" content="How I designed an end-to-end pipeline from training a clinical classifier to auto-retraining on Kubernetes with MLflow tracking without breaking GDPR or HIPAA.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F172A;--navy2:#1E293B;--blue:#3B82F6;--blue2:#60A5FA;--cyan:#06B6D4;--green:#10B981;--white:#FFFFFF;--gray50:#F8FAFC;--gray100:#F1F5F9;--gray200:#E2E8F0;--gray400:#94A3B8;--gray600:#475569;--text:#0F172A}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);font-size:15px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;background:rgba(15,23,42,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-logo{font-size:18px;font-weight:800;color:var(--white);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-logo-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.5)}50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}}
+.nav-back{color:var(--gray400);text-decoration:none;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+.article-wrap{max-width:760px;margin:0 auto;padding:120px 40px 80px}
+.article-cat{display:inline-flex;align-items:center;background:#EDE9FE;color:#7C3AED;border:1px solid #C4B5FD;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px}
+.article-title{font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--text);line-height:1.15;letter-spacing:-0.025em;margin-bottom:20px}
+.article-meta{display:flex;align-items:center;gap:20px;padding:16px 0;border-top:1px solid var(--gray200);border-bottom:1px solid var(--gray200);margin-bottom:40px;flex-wrap:wrap}
+.meta-author{display:flex;align-items:center;gap:10px}
+.meta-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:18px}
+.meta-name{font-size:14px;font-weight:700;color:var(--text)}
+.meta-date{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace}
+.meta-read{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.article-body h2{font-size:22px;font-weight:800;color:var(--text);margin:44px 0 16px;letter-spacing:-0.015em}
+.article-body p{color:var(--gray600);font-size:15px;line-height:1.85;margin-bottom:20px}
+.article-body strong{color:var(--text);font-weight:700}
+.article-body ul{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column;gap:10px}
+.article-body ul li{color:var(--gray600);font-size:14px;line-height:1.75;padding-left:20px;position:relative}
+.article-body ul li::before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:700}
+.callout{background:var(--gray50);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:20px 24px;margin:28px 0}
+.callout p{margin:0;color:var(--text);font-size:14px;line-height:1.75}
+.pipeline-step{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+.step-num{width:36px;height:36px;border-radius:8px;background:#EFF6FF;border:1px solid #BFDBFE;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--blue);flex-shrink:0;margin-top:2px}
+.step-content h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-content p{font-size:13px;color:var(--gray600);line-height:1.7;margin:0}
+.code-block{background:var(--navy);border-radius:10px;padding:24px;margin:24px 0;overflow-x:auto}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:#E2E8F0}
+.code-block .comment{color:#64748B}
+.code-block .key{color:#60A5FA}
+.code-block .val{color:#6EE7B7}
+.article-footer{margin-top:60px;padding-top:32px;border-top:1px solid var(--gray200);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.atag{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:600}
+.back-btn{background:var(--blue);color:var(--white);padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:background 0.2s}
+.back-btn:hover{background:#2563EB}
+@media(max-width:768px){nav{padding:0 20px}.article-wrap{padding:100px 20px 60px}.meta-read{margin-left:0}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-dot"></div>Muhammad Raees</a>
+  <a href="../index.html#blog" class="nav-back">← Back to Blog</a>
+</nav>
+
+<div class="article-wrap">
+  <div class="article-cat">MLOps</div>
+  <h1 class="article-title">MLOps Pipeline for Healthcare AI Models: A Practical Guide</h1>
+  <div class="article-meta">
+    <div class="meta-author">
+      <div class="meta-avatar">👨‍⚕️</div>
+      <div>
+        <div class="meta-name">Muhammad Raees</div>
+        <div class="meta-date">Apr 2026 · 11 min read</div>
+      </div>
+    </div>
+    <div class="meta-read">MLOps · Kubernetes · Healthcare</div>
+  </div>
+
+  <div class="article-body">
+    <p>Deploying a machine learning model in healthcare is not the same as deploying one in e-commerce. The stakes are different, the regulations are different, and the data is different. A model that predicts sepsis risk or flags a dangerous drug interaction cannot be treated with the same casualness as a recommendation engine. In this article I walk through the MLOps pipeline I built for clinical AI models — from training through production deployment — while staying inside HIPAA and GDPR boundaries.</p>
+
+    <h2>Why Healthcare MLOps Is Different</h2>
+    <p>Standard MLOps pipelines focus on accuracy, latency, and uptime. Healthcare MLOps must also address:</p>
+    <ul>
+      <li><strong>Data governance</strong> — PHI cannot leave approved environments; training data requires de-identification</li>
+      <li><strong>Model explainability</strong> — clinicians and regulators need to understand why a model made a prediction</li>
+      <li><strong>Audit trails</strong> — every prediction, every model version, every retraining run must be logged</li>
+      <li><strong>Concept drift monitoring</strong> — clinical populations and treatment protocols change; models must be monitored and retrained</li>
+    </ul>
+
+    <div class="callout"><p><strong>Rule of thumb:</strong> If a clinician acts on your model's output and something goes wrong, you need to be able to reconstruct exactly what the model received as input, what version was running, and what it predicted. MLflow handles this — but only if you set it up correctly from day one.</p></div>
+
+    <h2>Pipeline Architecture — The 6 Stages</h2>
+
+    <div class="pipeline-step">
+      <div class="step-num">01</div>
+      <div class="step-content"><h4>Data Ingestion &amp; De-identification</h4><p>Raw clinical data arrives from EHR systems via FHIR APIs. A de-identification layer strips or pseudonymizes PHI before data enters the training environment. Tools: AWS Glue + custom Python transforms using the Presidio library.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">02</div>
+      <div class="step-content"><h4>Feature Engineering &amp; Validation</h4><p>Clinical features are computed and validated against expected ranges. Demographic drift is checked. Great Expectations runs data quality assertions before any training begins.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">03</div>
+      <div class="step-content"><h4>Model Training with MLflow Tracking</h4><p>Every training run is logged in MLflow: hyperparameters, metrics, dataset version, environment hash. No run is anonymous. This is the audit trail that regulators and clinicians can inspect.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">04</div>
+      <div class="step-content"><h4>Evaluation &amp; Clinical Validation Gate</h4><p>A model only proceeds to deployment if it passes automated thresholds AND a clinical review gate. The gate is a GitHub Actions step that requires a human approval from a designated clinical reviewer.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">05</div>
+      <div class="step-content"><h4>Containerised Deployment on Kubernetes</h4><p>Approved models are packaged as Docker images, pushed to ECR, and deployed as Flask REST APIs on Kubernetes using Helm charts. Zero-downtime rolling updates — clinical systems cannot tolerate hard cutover.</p></div>
+    </div>
+    <div class="pipeline-step">
+      <div class="step-num">06</div>
+      <div class="step-content"><h4>Monitoring &amp; Automated Retraining</h4><p>Prometheus scrapes prediction latency and confidence score distributions. When concept drift is detected — confidence scores shift below threshold — a GitHub Actions workflow triggers an automated retraining run back at step 1.</p></div>
+    </div>
+
+    <h2>The MLflow Tracking Setup</h2>
+    <p>MLflow is the backbone of the audit trail. Every training run in Python logs to a central MLflow tracking server deployed on Kubernetes:</p>
+
+    <div class="code-block"><pre><span class="key">import</span> mlflow
+<span class="key">import</span> mlflow.sklearn
+
+mlflow.set_tracking_uri(<span class="val">"http://mlflow-server.mlops.svc.cluster.local"</span>)
+mlflow.set_experiment(<span class="val">"sepsis-risk-classifier"</span>)
+
+<span class="key">with</span> mlflow.start_run() <span class="key">as</span> run:
+    mlflow.log_param(<span class="val">"model_type"</span>, <span class="val">"XGBoost"</span>)
+    mlflow.log_param(<span class="val">"dataset_version"</span>, dataset_hash)
+    mlflow.log_param(<span class="val">"deidentification_method"</span>, <span class="val">"presidio-v2"</span>)
+
+    model.fit(X_train, y_train)
+
+    mlflow.log_metric(<span class="val">"auc_roc"</span>, auc_score)
+    mlflow.log_metric(<span class="val">"sensitivity"</span>, sensitivity)  <span class="comment"># critical for clinical use</span>
+    mlflow.log_metric(<span class="val">"specificity"</span>, specificity)
+    mlflow.sklearn.log_model(model, <span class="val">"model"</span>)</pre></div>
+
+    <h2>The Clinical Validation Gate in GitHub Actions</h2>
+    <div class="code-block"><pre><span class="comment"># .github/workflows/deploy-model.yml</span>
+<span class="key">jobs</span>:
+  <span class="key">clinical-review</span>:
+    <span class="key">runs-on</span>: ubuntu-latest
+    <span class="key">environment</span>:
+      <span class="key">name</span>: <span class="val">clinical-approval</span>  <span class="comment"># requires human approval</span>
+    <span class="key">steps</span>:
+      - <span class="key">name</span>: Check AUC threshold
+        <span class="key">run</span>: |
+          python scripts/check_metrics.py \
+            --min-auc <span class="val">0.85</span> \
+            --min-sensitivity <span class="val">0.90</span>  <span class="comment"># clinical safety threshold</span>
+
+  <span class="key">deploy</span>:
+    <span class="key">needs</span>: clinical-review
+    <span class="key">steps</span>:
+      - <span class="key">name</span>: Deploy to Kubernetes
+        <span class="key">run</span>: helm upgrade --install model-api ./helm/model-api</pre></div>
+
+    <h2>What This Pipeline Looks Like at 3 AM</h2>
+    <p>Concept drift is detected overnight. Prometheus fires an alert. The GitHub Actions retraining workflow kicks off automatically. By morning, a new model candidate has been trained, its metrics logged in MLflow, and the clinical review gate is waiting for a human decision. Nobody had to be paged. Nobody lost sleep. The audit trail is complete and immutable.</p>
+    <p>This is what MLOps means in healthcare: not just faster deployments, but trustworthy, auditable, clinically-safe deployments. The pipeline is the compliance evidence.</p>
+  </div>
+
+  <div class="article-footer">
+    <div class="tags">
+      <span class="atag">MLOps</span><span class="atag">Kubernetes</span><span class="atag">MLflow</span><span class="atag">Healthcare AI</span>
+    </div>
+    <a href="../index.html#blog" class="back-btn">← Back to Portfolio</a>
+  </div>
+</div>
+</body>
+</html>

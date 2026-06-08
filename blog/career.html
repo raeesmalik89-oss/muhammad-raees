@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How a Pharm-D Became an AIOps Engineer | Muhammad Raees</title>
+<meta name="description" content="The non-obvious path from clinical pharmacy to cloud infrastructure — what I learned, what I dropped, and why the combination is more valuable than either alone.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#0F172A; --navy2:#1E293B; --blue:#3B82F6; --blue2:#60A5FA;
+  --cyan:#06B6D4; --green:#10B981; --white:#FFFFFF; --gray50:#F8FAFC;
+  --gray100:#F1F5F9; --gray200:#E2E8F0; --gray400:#94A3B8;
+  --gray600:#475569; --text:#0F172A;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);font-size:15px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px} ::-webkit-scrollbar-track{background:var(--navy)} ::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;background:rgba(15,23,42,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-logo{font-size:18px;font-weight:800;color:var(--white);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-logo-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.5)}50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}}
+.nav-back{color:var(--gray400);text-decoration:none;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+.article-wrap{max-width:760px;margin:0 auto;padding:120px 40px 80px}
+.article-cat{display:inline-flex;align-items:center;background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px}
+.article-title{font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--text);line-height:1.15;letter-spacing:-0.025em;margin-bottom:20px}
+.article-meta{display:flex;align-items:center;gap:20px;padding:16px 0;border-top:1px solid var(--gray200);border-bottom:1px solid var(--gray200);margin-bottom:40px;flex-wrap:wrap}
+.meta-author{display:flex;align-items:center;gap:10px}
+.meta-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:18px}
+.meta-name{font-size:14px;font-weight:700;color:var(--text)}
+.meta-date{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace}
+.meta-read{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.article-body h2{font-size:22px;font-weight:800;color:var(--text);margin:44px 0 16px;letter-spacing:-0.015em}
+.article-body p{color:var(--gray600);font-size:15px;line-height:1.85;margin-bottom:20px}
+.article-body strong{color:var(--text);font-weight:700}
+.article-body ul{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column;gap:10px}
+.article-body ul li{color:var(--gray600);font-size:14px;line-height:1.75;padding-left:20px;position:relative}
+.article-body ul li::before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:700}
+.callout{background:var(--gray50);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:20px 24px;margin:28px 0}
+.callout p{margin:0;color:var(--text);font-size:14px;line-height:1.75}
+.article-footer{margin-top:60px;padding-top:32px;border-top:1px solid var(--gray200);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.atag{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:600}
+.back-btn{background:var(--blue);color:var(--white);padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:background 0.2s}
+.back-btn:hover{background:#2563EB}
+@media(max-width:768px){nav{padding:0 20px}.article-wrap{padding:100px 20px 60px}.meta-read{margin-left:0}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-dot"></div>Muhammad Raees</a>
+  <a href="../index.html#blog" class="nav-back">← Back to Blog</a>
+</nav>
+
+<div class="article-wrap">
+  <div class="article-cat">Career</div>
+  <h1 class="article-title">How a Pharm-D Became an AIOps Engineer</h1>
+  <div class="article-meta">
+    <div class="meta-author">
+      <div class="meta-avatar">👨‍⚕️</div>
+      <div>
+        <div class="meta-name">Muhammad Raees</div>
+        <div class="meta-date">May 2026 · 6 min read</div>
+      </div>
+    </div>
+    <div class="meta-read">Career · AIOps · Pharmacy</div>
+  </div>
+
+  <div class="article-body">
+    <p>When I tell people I have a <strong>Doctor of Pharmacy (Pharm-D)</strong> and also work as an <strong>AIOps and Cloud Engineer</strong>, I usually get one of two reactions: confusion, or fascination. Rarely indifference. This is the story of how that transition happened, what made it possible, and why I believe the combination is genuinely more valuable than either discipline alone.</p>
+
+    <h2>Where It Started — The Pharmacy Years</h2>
+    <p>For over five years I worked in clinical pharmacy settings — reviewing prescriptions, catching drug interactions, counseling patients, and working alongside physicians on treatment decisions. It was demanding, precise work. A small error in dosage or a missed contraindication could have serious consequences. That environment trained me to be obsessively detail-oriented and to think in systems: a drug doesn't just affect one receptor, it ripples through the entire body's physiology.</p>
+    <p>What I didn't expect was how directly that systems-thinking would transfer to technology. Pharmacy taught me to read complex data, identify anomalies under pressure, and communicate risk to non-technical stakeholders — all core skills in AIOps.</p>
+
+    <div class="callout"><p>"A pharmacist who catches a critical drug interaction before it reaches the patient is doing exactly what an AIOps engineer does when they catch a system failure before it reaches the user."</p></div>
+
+    <h2>The Pivot — Why AIOps?</h2>
+    <p>The turning point came when I started seeing how poorly most healthcare IT systems were managed. Electronic Health Record (EHR) systems going down with no warning. Pharmacy management software throwing false alerts that nobody trusted anymore. Clinical staff ignoring alarm fatigue because the system cried wolf too often. I knew these problems intimately from the clinical side, and I started asking — could technology be smarter about this?</p>
+    <p>I began self-studying Python, then Linux, then Docker and Kubernetes. What accelerated my learning was that I already understood the <strong>domain</strong> — I just needed to learn the tools. Most engineers learning AIOps spend months understanding healthcare workflows; I already had five years of that context baked in.</p>
+
+    <h2>What I Dropped</h2>
+    <p>Being honest: the transition wasn't painless. I dropped a stable, respected career with a clear progression path. I spent evenings and weekends studying while working full-time. There were months of uncertainty about whether the investment would pay off. A few things I had to consciously let go of:</p>
+    <ul>
+      <li>The assumption that credentials alone open doors (in tech, GitHub projects speak louder than degrees)</li>
+      <li>Perfectionism before shipping — pharmacy demands zero errors; tech demands iteration</li>
+      <li>Waiting for formal training — I had to become comfortable learning from documentation and failing fast</li>
+    </ul>
+
+    <h2>Why the Combination Is Rare — and Valuable</h2>
+    <p>There are thousands of DevOps engineers. There are thousands of pharmacists. There are very few people who are genuinely fluent in both. That intersection creates unusual value in healthcare technology: I can sit in a meeting with clinicians and engineers and translate between them. I understand why a pharmacy dispensing alert matters clinically, and I know how to architect a system that handles it intelligently.</p>
+    <p>Health-tech organizations don't just need engineers who can deploy Kubernetes — they need engineers who understand what the system is actually protecting. That clinical context changes every architectural decision I make.</p>
+
+    <h2>What I'd Tell Anyone Considering a Similar Path</h2>
+    <ul>
+      <li>Your domain expertise is your moat — don't abandon it, compound it with technical skills</li>
+      <li>Start building publicly on GitHub before you feel ready</li>
+      <li>The people who hire you for your hybrid profile are specifically looking for what you uniquely offer</li>
+      <li>Certifications help (AWS, Kubernetes) but projects prove competence</li>
+      <li>Find the intersection where your two worlds solve a real problem nobody else is solving</li>
+    </ul>
+
+    <p>The path from Pharm-D to AIOps Engineer wasn't linear. But looking back, every year in pharmacy made me a better engineer — and every engineering skill I've built makes me a more effective advocate for patient safety through technology.</p>
+  </div>
+
+  <div class="article-footer">
+    <div class="tags">
+      <span class="atag">Career</span>
+      <span class="atag">AIOps</span>
+      <span class="atag">Pharmacy</span>
+      <span class="atag">Healthcare IT</span>
+    </div>
+    <a href="../index.html#blog" class="back-btn">← Back to Portfolio</a>
+  </div>
+</div>
+</body>
+</html>

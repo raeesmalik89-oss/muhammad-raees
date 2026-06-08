@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitoring Clinical Systems with Prometheus & Grafana | Muhammad Raees</title>
+<meta name="description" content="Setting up a full observability stack for healthcare microservices — custom metrics, alert rules that matter, and dashboards clinicians can actually read.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0F172A;--navy2:#1E293B;--blue:#3B82F6;--blue2:#60A5FA;--cyan:#06B6D4;--green:#10B981;--white:#FFFFFF;--gray50:#F8FAFC;--gray100:#F1F5F9;--gray200:#E2E8F0;--gray400:#94A3B8;--gray600:#475569;--text:#0F172A}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);font-size:15px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;background:rgba(15,23,42,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-logo{font-size:18px;font-weight:800;color:var(--white);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-logo-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.5)}50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}}
+.nav-back{color:var(--gray400);text-decoration:none;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+.article-wrap{max-width:760px;margin:0 auto;padding:120px 40px 80px}
+.article-cat{display:inline-flex;align-items:center;background:#EFF6FF;color:#0369A1;border:1px solid #BAE6FD;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:20px}
+.article-title{font-size:clamp(28px,4vw,44px);font-weight:900;color:var(--text);line-height:1.15;letter-spacing:-0.025em;margin-bottom:20px}
+.article-meta{display:flex;align-items:center;gap:20px;padding:16px 0;border-top:1px solid var(--gray200);border-bottom:1px solid var(--gray200);margin-bottom:40px;flex-wrap:wrap}
+.meta-author{display:flex;align-items:center;gap:10px}
+.meta-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:18px}
+.meta-name{font-size:14px;font-weight:700;color:var(--text)}
+.meta-date{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace}
+.meta-read{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace;margin-left:auto}
+.article-body h2{font-size:22px;font-weight:800;color:var(--text);margin:44px 0 16px;letter-spacing:-0.015em}
+.article-body p{color:var(--gray600);font-size:15px;line-height:1.85;margin-bottom:20px}
+.article-body strong{color:var(--text);font-weight:700}
+.article-body ul{list-style:none;margin:0 0 24px;padding:0;display:flex;flex-direction:column;gap:10px}
+.article-body ul li{color:var(--gray600);font-size:14px;line-height:1.75;padding-left:20px;position:relative}
+.article-body ul li::before{content:'→';position:absolute;left:0;color:var(--blue);font-weight:700}
+.callout{background:var(--gray50);border-left:3px solid var(--blue);border-radius:0 10px 10px 0;padding:20px 24px;margin:28px 0}
+.callout p{margin:0;color:var(--text);font-size:14px;line-height:1.75}
+.code-block{background:var(--navy);border-radius:10px;padding:24px;margin:24px 0;overflow-x:auto}
+.code-block pre{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.8;color:#E2E8F0}
+.code-block .comment{color:#64748B}
+.code-block .key{color:#60A5FA}
+.code-block .val{color:#6EE7B7}
+.alert-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0}
+.alert-card{background:var(--gray50);border:1px solid var(--gray200);border-radius:10px;padding:16px}
+.alert-card h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px}
+.alert-card p{font-size:12px;color:var(--gray600);line-height:1.6;margin:0}
+.alert-card.critical{border-left:3px solid #EF4444}
+.alert-card.warning{border-left:3px solid #F59E0B}
+.article-footer{margin-top:60px;padding-top:32px;border-top:1px solid var(--gray200);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.tags{display:flex;gap:8px;flex-wrap:wrap}
+.atag{background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;padding:4px 12px;border-radius:5px;font-size:11px;font-weight:600}
+.back-btn{background:var(--blue);color:var(--white);padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;transition:background 0.2s}
+.back-btn:hover{background:#2563EB}
+@media(max-width:768px){nav{padding:0 20px}.article-wrap{padding:100px 20px 60px}.meta-read{margin-left:0}.alert-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-dot"></div>Muhammad Raees</a>
+  <a href="../index.html#blog" class="nav-back">← Back to Blog</a>
+</nav>
+
+<div class="article-wrap">
+  <div class="article-cat">Observability</div>
+  <h1 class="article-title">Monitoring Clinical Systems with Prometheus &amp; Grafana</h1>
+  <div class="article-meta">
+    <div class="meta-author">
+      <div class="meta-avatar">👨‍⚕️</div>
+      <div>
+        <div class="meta-name">Muhammad Raees</div>
+        <div class="meta-date">Apr 2026 · 8 min read</div>
+      </div>
+    </div>
+    <div class="meta-read">Observability · Prometheus · Grafana</div>
+  </div>
+
+  <div class="article-body">
+    <p>Most Prometheus and Grafana tutorials show you how to monitor CPU and memory. That's fine for a web app. But when you're monitoring a pharmacy management system, an EHR, or a clinical decision support API, the metrics that matter are fundamentally different. In this article I'll show you how I set up observability for healthcare microservices — including the custom metrics, alert rules, and dashboard design choices that actually serve clinical operations teams.</p>
+
+    <h2>The Problem with Generic Monitoring in Healthcare</h2>
+    <p>Generic infrastructure monitoring tells you when a server is unhealthy. Clinical monitoring tells you when a <strong>patient-facing service</strong> is degrading. These are different things. A pharmacy dispensing API running at 100% CPU might still be serving requests fine. But if its p99 response time crosses 3 seconds, a pharmacist is waiting — and that delay has downstream patient safety implications.</p>
+    <p>The shift from infrastructure monitoring to clinical service monitoring requires defining <strong>clinically meaningful SLOs</strong> (Service Level Objectives) and building alerts around them.</p>
+
+    <div class="callout"><p><strong>Key insight from pharmacy practice:</strong> Alert fatigue is as dangerous in IT as it is in clinical settings. When every alert is critical, none are. Design your Prometheus alert rules with the same discipline a pharmacist uses to triage incoming orders — not everything needs immediate action.</p></div>
+
+    <h2>Custom Metrics for Clinical Services</h2>
+    <p>Beyond the default node_exporter metrics, healthcare services need custom application metrics exposed via the Prometheus Python client:</p>
+
+    <div class="code-block"><pre><span class="key">from</span> prometheus_client <span class="key">import</span> Counter, Histogram, Gauge
+
+<span class="comment"># Track prescription API requests by outcome</span>
+prescription_requests = Counter(
+    <span class="val">'pharmacy_prescription_requests_total'</span>,
+    <span class="val">'Total prescription API requests'</span>,
+    [<span class="val">'method'</span>, <span class="val">'status'</span>, <span class="val">'drug_class'</span>]
+)
+
+<span class="comment"># Track dispensing decision latency — clinical SLO: p99 &lt; 2s</span>
+dispensing_latency = Histogram(
+    <span class="val">'pharmacy_dispensing_decision_seconds'</span>,
+    <span class="val">'Time to return dispensing decision'</span>,
+    buckets=[<span class="val">0.1</span>, <span class="val">0.5</span>, <span class="val">1.0</span>, <span class="val">2.0</span>, <span class="val">5.0</span>]
+)
+
+<span class="comment"># Track active drug interaction checks in flight</span>
+active_interaction_checks = Gauge(
+    <span class="val">'pharmacy_active_interaction_checks'</span>,
+    <span class="val">'Concurrent drug interaction checks in progress'</span>
+)</pre></div>
+
+    <h2>Alert Rules That Matter</h2>
+    <p>The four alerts I configure for every clinical service deployment — mapped to real patient impact:</p>
+
+    <div class="alert-row">
+      <div class="alert-card critical">
+        <h4>🔴 Dispensing API Down</h4>
+        <p>Service unavailable for &gt;60s. Immediate page. Pharmacists cannot process prescriptions.</p>
+      </div>
+      <div class="alert-card critical">
+        <h4>🔴 Interaction Check Latency</h4>
+        <p>p99 &gt; 3s for 5 min. Clinical workflow blocked. Pharmacists waiting on safety check results.</p>
+      </div>
+      <div class="alert-card warning">
+        <h4>🟡 Error Rate Elevated</h4>
+        <p>5xx rate &gt; 2% for 10 min. Service degraded. Some requests failing silently.</p>
+      </div>
+      <div class="alert-card warning">
+        <h4>🟡 Queue Depth Rising</h4>
+        <p>Pending prescription queue &gt; 50 for 5 min. Capacity issue forming before it becomes critical.</p>
+      </div>
+    </div>
+
+    <div class="code-block"><pre><span class="comment"># prometheus/rules/clinical-alerts.yaml</span>
+<span class="key">groups</span>:
+  - <span class="key">name</span>: clinical.rules
+    <span class="key">rules</span>:
+      - <span class="key">alert</span>: <span class="val">DispensingAPIDown</span>
+        <span class="key">expr</span>: up{job=<span class="val">"pharmacy-api"</span>} == <span class="val">0</span>
+        <span class="key">for</span>: <span class="val">1m</span>
+        <span class="key">labels</span>:
+          <span class="key">severity</span>: <span class="val">critical</span>
+          <span class="key">clinical_impact</span>: <span class="val">high</span>
+        <span class="key">annotations</span>:
+          <span class="key">summary</span>: <span class="val">"Pharmacy dispensing API is unreachable"</span>
+          <span class="key">runbook</span>: <span class="val">"https://wiki.internal/runbooks/pharmacy-api-down"</span>
+
+      - <span class="key">alert</span>: <span class="val">HighDispensingLatency</span>
+        <span class="key">expr</span>: |
+          histogram_quantile(<span class="val">0.99</span>,
+            rate(pharmacy_dispensing_decision_seconds_bucket[<span class="val">5m</span>])
+          ) &gt; <span class="val">3</span>
+        <span class="key">for</span>: <span class="val">5m</span>
+        <span class="key">labels</span>:
+          <span class="key">severity</span>: <span class="val">warning</span></pre></div>
+
+    <h2>Grafana Dashboard Design for Clinical Teams</h2>
+    <p>Standard Grafana dashboards are built for engineers. Clinical operations dashboards need to be readable by people who don't know what p99 means. My dashboard design principles for healthcare:</p>
+    <ul>
+      <li><strong>Top row: traffic light status</strong> — green/amber/red stat panels for each critical service. Readable at a glance from across the room</li>
+      <li><strong>Second row: patient-facing SLOs</strong> — "Dispensing decisions in &lt;2s: 99.4%" rather than raw latency histograms</li>
+      <li><strong>Third row: volume and trends</strong> — prescriptions processed per hour, error counts, queue depths with time annotations for shift changes</li>
+      <li><strong>Bottom row: infrastructure</strong> — for engineers, not clinicians. CPU, memory, pod restarts</li>
+      <li><strong>Annotations</strong> — mark deployments and configuration changes so teams can correlate changes with metric shifts instantly</li>
+    </ul>
+
+    <h2>Reducing Alert Fatigue — The Clinical Lesson Applied to IT</h2>
+    <p>In clinical pharmacy, one of the biggest patient safety challenges is <strong>alert fatigue</strong>: when drug interaction warnings fire so frequently that pharmacists start clicking through them without reading. The same problem exists in IT monitoring — when every threshold breach generates a page, on-call engineers start ignoring alerts.</p>
+    <p>The fix in both domains is the same: <strong>alert on patient/user impact, not on technical thresholds</strong>. A server at 85% CPU is not an alert. A service failing to return dispensing decisions is. Design your Prometheus rules around the clinical outcome you're protecting, and your on-call team will actually trust the alerts they receive.</p>
+  </div>
+
+  <div class="article-footer">
+    <div class="tags">
+      <span class="atag">Prometheus</span><span class="atag">Grafana</span><span class="atag">Observability</span><span class="atag">Healthcare</span>
+    </div>
+    <a href="../index.html#blog" class="back-btn">← Back to Portfolio</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Channel | Muhammad Raees — Clinical AIOps Engineer</title>
+<meta name="description" content="Subscribe to Muhammad Raees on YouTube — practical tutorials at the intersection of clinical pharmacy, AIOps, cloud engineering, and healthcare IT.">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #0F172A; --navy2:  #1E293B; --navy3:  #334155;
+  --blue:   #3B82F6; --blue2:  #60A5FA; --cyan:   #06B6D4;
+  --green:  #10B981; --red:    #EF4444; --white:  #FFFFFF;
+  --gray50: #F8FAFC; --gray100:#F1F5F9; --gray200:#E2E8F0;
+  --gray400:#94A3B8; --gray600:#475569; --text:   #0F172A;
+  --yt-red: #FF0000;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--text);font-size:15px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--navy)}::-webkit-scrollbar-thumb{background:var(--blue);border-radius:4px}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 60px;height:68px;background:rgba(15,23,42,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-logo{font-size:18px;font-weight:800;color:var(--white);letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-logo-dot{width:8px;height:8px;background:var(--blue);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,0.5)}50%{box-shadow:0 0 0 8px rgba(59,130,246,0)}}
+.nav-back{color:var(--gray400);text-decoration:none;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+
+/* ── HERO ── */
+.yt-hero{min-height:100vh;background:var(--navy);display:flex;align-items:center;position:relative;overflow:hidden;padding:68px 0 0}
+.yt-hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 40%,rgba(255,0,0,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 20% 80%,rgba(59,130,246,0.08) 0%,transparent 60%)}
+.yt-hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:80px 80px}
+.yt-hero-inner{position:relative;z-index:2;max-width:1100px;margin:0 auto;width:100%;padding:0 60px;display:grid;grid-template-columns:1fr 360px;gap:80px;align-items:center}
+
+.yt-tag{display:inline-flex;align-items:center;gap:8px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,0,0,0.25);border-radius:100px;padding:6px 16px 6px 10px;margin-bottom:28px;animation:fadeUp 0.6s ease both}
+.yt-tag-dot{width:6px;height:6px;background:var(--yt-red);border-radius:50%;animation:pulse 2s infinite}
+.yt-tag span{font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#FCA5A5}
+.yt-title{font-size:clamp(36px,5vw,62px);font-weight:900;color:var(--white);line-height:1.08;letter-spacing:-0.03em;margin-bottom:12px;animation:fadeUp 0.6s 0.08s ease both}
+.yt-title span{color:var(--yt-red)}
+.yt-sub-title{font-size:16px;font-weight:500;color:var(--gray400);margin-bottom:28px;animation:fadeUp 0.6s 0.15s ease both}
+.yt-desc{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.8;max-width:520px;margin-bottom:40px;animation:fadeUp 0.6s 0.2s ease both}
+.yt-desc strong{color:var(--blue2);font-weight:600}
+.yt-btns{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp 0.6s 0.25s ease both}
+.btn-yt{background:var(--yt-red);color:var(--white);padding:14px 32px;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;gap:10px;transition:all 0.25s;letter-spacing:0.01em}
+.btn-yt:hover{background:#CC0000;transform:translateY(-2px);box-shadow:0 12px 32px rgba(255,0,0,0.35)}
+.btn-portfolio{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8);padding:14px 32px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.25s}
+.btn-portfolio:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.25)}
+
+/* Channel card */
+.yt-channel-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:20px;padding:32px;backdrop-filter:blur(24px);animation:fadeUp 0.6s 0.15s ease both}
+.yt-channel-banner{height:90px;background:linear-gradient(135deg,#1a0000 0%,#3d0000 50%,#1a0010 100%);border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.yt-channel-banner::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:30px 30px}
+.banner-text{font-size:13px;font-weight:800;color:rgba(255,255,255,0.7);letter-spacing:0.15em;text-transform:uppercase;z-index:1}
+.yt-avatar-row{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.yt-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--yt-red),#FF6B6B);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.yt-channel-name{font-size:17px;font-weight:800;color:var(--white)}
+.yt-handle{font-size:12px;color:var(--gray400);font-family:'JetBrains Mono',monospace}
+.yt-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:18px}
+.yt-stat{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px 8px;text-align:center}
+.yt-stat-num{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--yt-red);line-height:1}
+.yt-stat-lbl{font-size:9px;color:var(--gray400);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
+.yt-topics{display:flex;flex-wrap:wrap;gap:6px}
+.yt-topic{background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.2);color:#FCA5A5;padding:3px 10px;border-radius:5px;font-size:10px;font-weight:600;letter-spacing:0.04em}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ── SECTIONS ── */
+section{padding:90px 60px}
+.section-inner{max-width:1100px;margin:0 auto}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--blue);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:'';width:28px;height:1.5px;background:var(--blue)}
+.eyebrow.red{color:#F87171}
+.eyebrow.red::before{background:#F87171}
+.section-title{font-size:clamp(28px,4vw,44px);font-weight:800;color:var(--text);line-height:1.1;letter-spacing:-0.025em;margin-bottom:14px}
+.section-title em{font-style:normal;color:var(--blue)}
+.section-title em.red{color:var(--yt-red)}
+.section-desc{color:var(--gray600);font-size:15px;line-height:1.75;max-width:540px;margin-bottom:52px}
+.bg-light{background:var(--gray50)}
+.bg-navy{background:var(--navy)}
+.divider{height:1px;background:var(--gray200)}
+
+/* ── PILLARS ── */
+.pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pillar-card{background:var(--white);border:1px solid var(--gray200);border-radius:14px;padding:36px 28px;position:relative;overflow:hidden;transition:all 0.3s}
+.pillar-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:0 16px 40px rgba(59,130,246,0.1)}
+.pillar-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.pillar-icon{font-size:36px;margin-bottom:16px;display:block}
+.pillar-card h3{font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px}
+.pillar-card p{color:var(--gray600);font-size:13px;line-height:1.75;margin-bottom:18px}
+.pillar-count{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--blue);font-weight:600;display:flex;align-items:center;gap:6px}
+.pillar-count::before{content:'';width:16px;height:1.5px;background:var(--blue)}
+
+/* ── VIDEO SERIES ── */
+.series-list{display:flex;flex-direction:column;gap:16px}
+.series-card{background:var(--white);border:1px solid var(--gray200);border-radius:14px;padding:28px 32px;display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;transition:all 0.25s}
+.series-card:hover{border-color:var(--yt-red);box-shadow:0 8px 32px rgba(255,0,0,0.08);transform:translateX(4px)}
+.series-ep{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--yt-red);background:#FFF1F1;border:1px solid #FECACA;border-radius:8px;padding:8px 14px;text-align:center;white-space:nowrap}
+.series-info h4{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
+.series-info p{color:var(--gray600);font-size:13px;line-height:1.65}
+.series-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap}
+.badge-soon{background:#FFF7ED;color:#C2410C;border:1px solid #FED7AA}
+.badge-live{background:#ECFDF5;color:#059669;border:1px solid #A7F3D0;animation:pulse-green 2s infinite}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+
+/* ── WHY SUBSCRIBE ── */
+.why-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.why-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);border-radius:14px;padding:32px 28px}
+.why-card h4{font-size:15px;font-weight:700;color:var(--white);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.why-icon{font-size:20px}
+.why-card p{color:rgba(255,255,255,0.45);font-size:13px;line-height:1.8}
+
+/* ── LATEST VIDEOS placeholder ── */
+.videos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.video-card{background:var(--white);border:1px solid var(--gray200);border-radius:14px;overflow:hidden;transition:all 0.3s}
+.video-card:hover{border-color:var(--yt-red);transform:translateY(-4px);box-shadow:0 16px 40px rgba(255,0,0,0.08)}
+.video-thumb{height:160px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
+.video-thumb-1{background:linear-gradient(135deg,#0F172A,#1E3A5F)}
+.video-thumb-2{background:linear-gradient(135deg,#064E3B,#065F46)}
+.video-thumb-3{background:linear-gradient(135deg,#1E1B4B,#312E81)}
+.video-thumb::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.02) 1px,transparent 1px);background-size:40px 40px}
+.play-btn{width:52px;height:52px;background:var(--yt-red);border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:1;transition:transform 0.2s;box-shadow:0 4px 20px rgba(255,0,0,0.5)}
+.video-card:hover .play-btn{transform:scale(1.1)}
+.play-icon{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:18px solid white;margin-left:4px}
+.video-body{padding:20px}
+.video-cat{font-size:10px;font-weight:700;color:var(--yt-red);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
+.video-card h4{font-size:14px;font-weight:700;color:var(--text);line-height:1.45;margin-bottom:8px}
+.video-meta{font-size:11px;color:var(--gray400);font-family:'JetBrains Mono',monospace}
+.coming-soon-overlay{position:absolute;inset:0;background:rgba(15,23,42,0.7);display:flex;align-items:center;justify-content:center;z-index:2;backdrop-filter:blur(2px)}
+.coming-soon-tag{background:var(--yt-red);color:white;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:6px 14px;border-radius:4px}
+
+/* ── CTA ── */
+.yt-cta{background:var(--navy);text-align:center;padding:100px 60px;position:relative;overflow:hidden}
+.yt-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(255,0,0,0.08) 0%,transparent 70%)}
+.yt-cta h2{font-size:clamp(30px,4vw,50px);font-weight:800;color:var(--white);line-height:1.1;letter-spacing:-0.02em;max-width:620px;margin:0 auto 16px;position:relative;z-index:1}
+.yt-cta h2 span{color:var(--yt-red)}
+.yt-cta p{color:rgba(255,255,255,0.45);max-width:420px;margin:0 auto;font-size:15px;position:relative;z-index:1}
+.yt-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:44px;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);border-top:1px solid rgba(255,255,255,0.06);padding:36px 60px;display:flex;align-items:center;justify-content:space-between}
+.footer-brand{font-size:17px;font-weight:800;color:var(--white);display:flex;align-items:center;gap:8px}
+.footer-copy{color:rgba(255,255,255,0.3);font-size:12px}
+.footer-links{display:flex;gap:10px}
+.footer-links a{width:36px;height:36px;border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.4);text-decoration:none;font-size:12px;font-weight:700;transition:all 0.25s}
+.footer-links a:hover{background:rgba(255,0,0,0.15);border-color:var(--yt-red);color:var(--yt-red)}
+.btn-ghost-white{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.8);padding:14px 32px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);font-size:14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:8px;transition:all 0.25s}
+.btn-ghost-white:hover{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.25)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){.yt-hero-inner{grid-template-columns:1fr}.pillars-grid{grid-template-columns:repeat(2,1fr)}.videos-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){nav{padding:0 20px}section{padding:60px 20px}.yt-hero-inner{padding:0 20px}.pillars-grid,.videos-grid,.why-grid{grid-template-columns:1fr}.series-card{grid-template-columns:1fr;gap:12px;padding:20px}.series-badge{width:fit-content}footer{flex-direction:column;gap:14px;text-align:center;padding:30px 20px}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-dot"></div>Muhammad Raees</a>
+  <a href="index.html" class="nav-back">← Back to Portfolio</a>
+</nav>
+
+<!-- HERO -->
+<div class="yt-hero">
+  <div class="yt-hero-bg"></div>
+  <div class="yt-hero-grid"></div>
+  <div class="yt-hero-inner">
+
+    <div>
+      <div class="yt-tag"><div class="yt-tag-dot"></div><span>Channel Launching Soon</span></div>
+      <h1 class="yt-title">Clinical <span>AIOps</span><br>on YouTube</h1>
+      <p class="yt-sub-title">Practical tutorials at the intersection of healthcare & cloud</p>
+      <p class="yt-desc">
+        I'm building a YouTube channel where a <strong>Pharm-D meets AIOps</strong> — video tutorials, case studies, and career insights for engineers and clinicians navigating healthcare technology. No fluff. Real infrastructure, real clinical context.
+      </p>
+      <div class="yt-btns">
+        <a href="https://www.youtube.com/@muhammadraees-healthcare" target="_blank" class="btn-yt">
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="white"><path d="M19.6 2.2C19.4 1.4 18.8.8 18 .6 16.4 0 10 0 10 0S3.6 0 2 .6C1.2.8.6 1.4.4 2.2 0 3.8 0 7 0 7s0 3.2.4 4.8c.2.8.8 1.4 1.6 1.6C3.6 14 10 14 10 14s6.4 0 8-.6c.8-.2 1.4-.8 1.6-1.6C20 10.2 20 7 20 7s0-3.2-.4-4.8zM8 10V4l5.3 3L8 10z"/></svg>
+          Subscribe on YouTube
+        </a>
+        <a href="index.html" class="btn-portfolio">← View Full Portfolio</a>
+      </div>
+    </div>
+
+    <div class="yt-channel-card">
+      <div class="yt-channel-banner"><span class="banner-text">Clinical AIOps</span></div>
+      <div class="yt-avatar-row">
+        <div class="yt-avatar">👨‍⚕️</div>
+        <div>
+          <div class="yt-channel-name">Muhammad Raees</div>
+          <div class="yt-handle">@muhammadraees-healthcare</div>
+        </div>
+      </div>
+      <div class="yt-stats">
+        <div class="yt-stat"><div class="yt-stat-num">—</div><div class="yt-stat-lbl">Subscribers</div></div>
+        <div class="yt-stat"><div class="yt-stat-num">—</div><div class="yt-stat-lbl">Videos</div></div>
+        <div class="yt-stat"><div class="yt-stat-num">—</div><div class="yt-stat-lbl">Views</div></div>
+      </div>
+      <div class="yt-topics">
+        <span class="yt-topic">AIOps</span>
+        <span class="yt-topic">MLOps</span>
+        <span class="yt-topic">Healthcare IT</span>
+        <span class="yt-topic">Kubernetes</span>
+        <span class="yt-topic">Terraform</span>
+        <span class="yt-topic">HIPAA</span>
+        <span class="yt-topic">Pharm-D</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONTENT PILLARS -->
+<section class="bg-light">
+  <div class="section-inner">
+    <div class="eyebrow">What I Cover</div>
+    <h2 class="section-title">Three Content <em>Pillars</em></h2>
+    <p class="section-desc">Every video fits one of three lanes — so you always know exactly what you're getting and why it matters.</p>
+    <div class="pillars-grid reveal">
+
+      <div class="pillar-card">
+        <span class="pillar-icon">☁️</span>
+        <h3>Cloud & AIOps Engineering</h3>
+        <p>Hands-on tutorials covering Kubernetes, Terraform, Prometheus, Grafana, CI/CD pipelines, and AWS/Azure deployments — explained clearly with real infrastructure examples, not toy demos.</p>
+        <div class="pillar-count">8 videos planned</div>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">⚕️</span>
+        <h3>Healthcare IT & Compliance</h3>
+        <p>How to build HIPAA-compliant systems, work with FHIR and HL7 data, monitor EHR infrastructure, and apply clinical knowledge to solve real healthcare technology problems.</p>
+        <div class="pillar-count">6 videos planned</div>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">🚀</span>
+        <h3>Career — Pharmacy to Tech</h3>
+        <p>My honest journey from Pharm-D to AIOps engineer — the tools I learned, the mistakes I made, how I built a portfolio from scratch, and how to position a non-traditional background as your biggest asset.</p>
+        <div class="pillar-count">5 videos planned</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VIDEO SERIES -->
+<section>
+  <div class="section-inner">
+    <div class="eyebrow red">Upcoming Series</div>
+    <h2 class="section-title">Planned <em class="red">Video Series</em></h2>
+    <p class="section-desc">The first three series launching on the channel — structured playlists you can follow from zero to production.</p>
+    <div class="series-list reveal">
+
+      <div class="series-card">
+        <div class="series-ep">SERIES 01</div>
+        <div class="series-info">
+          <h4>HIPAA-Compliant Infrastructure on AWS — From Zero to Audit-Ready</h4>
+          <p>6-part series: VPC design, IAM least-privilege, encryption at rest & in transit, CloudTrail audit logging, AWS Config compliance rules, and a final architecture review. Built entirely with Terraform.</p>
+        </div>
+        <div class="series-badge badge-soon">Coming Soon</div>
+      </div>
+
+      <div class="series-card">
+        <div class="series-ep">SERIES 02</div>
+        <div class="series-info">
+          <h4>MLOps for Healthcare AI — Train, Deploy & Monitor Clinical Models</h4>
+          <p>5-part series: Data de-identification, MLflow experiment tracking, containerising models with Docker, deploying to Kubernetes with Helm, and automated retraining pipelines with GitHub Actions.</p>
+        </div>
+        <div class="series-badge badge-soon">Coming Soon</div>
+      </div>
+
+      <div class="series-card">
+        <div class="series-ep">SERIES 03</div>
+        <div class="series-info">
+          <h4>Observability Stack for Clinical Systems — Prometheus, Grafana & ELK</h4>
+          <p>4-part series: Installing and configuring Prometheus & Grafana, writing clinical-grade alert rules, building dashboards that non-engineers can read, and integrating the ELK stack for log analysis.</p>
+        </div>
+        <div class="series-badge badge-soon">Coming Soon</div>
+      </div>
+
+      <div class="series-card">
+        <div class="series-ep">SERIES 04</div>
+        <div class="series-info">
+          <h4>From Pharm-D to AIOps Engineer — My Full Career Transition</h4>
+          <p>4-part series: Why I made the switch, how I learned DevOps from scratch while working full-time, building a GitHub portfolio, and landing the first role. Raw and honest — no highlight reel.</p>
+        </div>
+        <div class="series-badge badge-soon">Coming Soon</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LATEST VIDEOS -->
+<section class="bg-light">
+  <div class="section-inner">
+    <div class="eyebrow red">Latest Videos</div>
+    <h2 class="section-title">First Videos <em>Dropping Soon</em></h2>
+    <p class="section-desc">Subscribe and hit the bell — these are the first three videos going live on the channel.</p>
+    <div class="videos-grid reveal">
+
+      <div class="video-card">
+        <div class="video-thumb video-thumb-1">
+          <div class="coming-soon-overlay"><div class="coming-soon-tag">Coming Soon</div></div>
+          <div class="play-btn"><div class="play-icon"></div></div>
+        </div>
+        <div class="video-body">
+          <div class="video-cat">Career</div>
+          <h4>How a Pharmacist Became an AIOps Engineer — My Full Story</h4>
+          <div class="video-meta">~18 min · Series 04 · Ep 01</div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-thumb video-thumb-2">
+          <div class="coming-soon-overlay"><div class="coming-soon-tag">Coming Soon</div></div>
+          <div class="play-btn"><div class="play-icon"></div></div>
+        </div>
+        <div class="video-body">
+          <div class="video-cat">Cloud Security</div>
+          <h4>HIPAA-Compliant VPC on AWS with Terraform — Step by Step</h4>
+          <div class="video-meta">~24 min · Series 01 · Ep 01</div>
+        </div>
+      </div>
+
+      <div class="video-card">
+        <div class="video-thumb video-thumb-3">
+          <div class="coming-soon-overlay"><div class="coming-soon-tag">Coming Soon</div></div>
+          <div class="play-btn"><div class="play-icon"></div></div>
+        </div>
+        <div class="video-body">
+          <div class="video-cat">Observability</div>
+          <h4>Prometheus & Grafana for Clinical Systems — Full Setup Guide</h4>
+          <div class="video-meta">~22 min · Series 03 · Ep 01</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHY SUBSCRIBE -->
+<div class="bg-navy" style="padding:90px 60px">
+  <div class="section-inner">
+    <div class="eyebrow" style="color:#F87171"><span style="display:inline-flex;align-items:center;gap:12px"><span style="width:28px;height:1.5px;background:#F87171;display:inline-block"></span>Why Subscribe</span></div>
+    <h2 class="section-title" style="color:white;margin-bottom:14px">What Makes This Channel <em class="red">Different</em></h2>
+    <p class="section-desc" style="color:rgba(255,255,255,0.45)">There are thousands of DevOps channels. There is one channel where a licensed pharmacist explains why the infrastructure you build actually matters to patients.</p>
+    <div class="why-grid reveal">
+      <div class="why-card">
+        <h4><span class="why-icon">⚕️</span> Clinical Context in Every Tutorial</h4>
+        <p>Every cloud or MLOps tutorial is grounded in real healthcare scenarios — not abstract examples. You'll understand not just how to build it, but why it matters clinically.</p>
+      </div>
+      <div class="why-card">
+        <h4><span class="why-icon">🔧</span> Production-Grade, Not Toy Examples</h4>
+        <p>All code and infrastructure shown on this channel is real — the same patterns I use in production deployments. No shortcuts that would never pass a HIPAA audit.</p>
+      </div>
+      <div class="why-card">
+        <h4><span class="why-icon">🧭</span> Career Transition Roadmap</h4>
+        <p>If you're a healthcare professional wanting to move into tech, or an engineer wanting to work in healthcare IT — this channel documents the exact path, mistakes included.</p>
+      </div>
+      <div class="why-card">
+        <h4><span class="why-icon">📐</span> Structured Series Format</h4>
+        <p>No random one-off videos. Every topic is a structured series you can follow from episode 1 to the end and walk away with a working, deployable system.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="yt-cta">
+  <h2>Subscribe before the first<br>video drops <span>→</span></h2>
+  <p>Be notified the moment the channel goes live. No spam — just real content worth watching.</p>
+  <div class="yt-cta-btns">
+    <a href="https://www.youtube.com/@muhammadraees-healthcare" target="_blank" class="btn-yt">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="white"><path d="M19.6 2.2C19.4 1.4 18.8.8 18 .6 16.4 0 10 0 10 0S3.6 0 2 .6C1.2.8.6 1.4.4 2.2 0 3.8 0 7 0 7s0 3.2.4 4.8c.2.8.8 1.4 1.6 1.6C3.6 14 10 14 10 14s6.4 0 8-.6c.8-.2 1.4-.8 1.6-1.6C20 10.2 20 7 20 7s0-3.2-.4-4.8zM8 10V4l5.3 3L8 10z"/></svg>
+      Subscribe on YouTube
+    </a>
+    <a href="index.html" class="btn-ghost-white">← Back to Portfolio</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand"><div class="nav-logo-dot"></div>Muhammad Raees</div>
+  <div class="footer-copy">© 2026 — Clinical AIOps Engineer. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/muhammad-raees081489" target="_blank" title="LinkedIn">in</a>
+    <a href="https://github.com/raeesmalik89-oss" target="_blank" title="GitHub">gh</a>
+    <a href="https://www.youtube.com/@muhammadraees-healthcare" target="_blank" title="YouTube">▶</a>
+    <a href="mailto:raees.malik89@gmail.com" title="Email">@</a>
+  </div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.06 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
